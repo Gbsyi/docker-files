@@ -1,0 +1,91 @@
+version: '3'
+
+services:
+  nginx:
+    #image: nginx
+    build: 
+      context: ./
+      dockerfile: ./dockerfiles/NginxDockerfile
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      backend:
+        ipv4_address: 172.16.238.2
+        #ipv6_address: 2001:3984:3989::2
+      default:
+
+  postgres:
+    #image: postgres
+    build: 
+      context: ./
+      dockerfile: ./dockerfiles/PsqlDockerfile
+    container_name: postgres
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.16.238.3
+        #ipv6_address: 2001:3984:3989::3
+    environment:
+      POSTGRES_PASSWORD: LMhOP230
+    command: /bin/bash -c "psql -f postgres-init.sql"
+
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.16.238.4
+        #ipv6_address: 2001:3984:3989::4
+    environment:
+      DB_ADDR: "https://postgres:5432"
+      DB_DATABASE: "KeycloakDb"
+      DB_USER: "keycloak"
+      DB_PASSWORD: "LMhOP230"
+  
+  service-anywhere:
+    build: 
+      context: ./
+      dockerfile: ./dockerfiles/SaDockerfile
+    container_name: api
+    restart: always
+    entrypoint: /bin/bash -c "cd /app ; dotnet ServiceAnywhere.MainApi.dll"
+    networks:
+      backend:
+        ipv4_address: 172.16.238.5
+        #ipv6_address: 2001:3984:3989::5
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./service=anywhere:/app
+
+  file-service:
+    build:
+      context: ./dockerfiles
+      dockerfile: FsDockerfile
+    container_name: fs
+    restart: always
+    entrypoint: /bin/bash -c "cd /app ; dotnet ServiceAnywhere.FileService.dll"
+    networks:
+      backend:
+        ipv4_address: 172.16.238.6
+        #ipv6_address: 2001:3984:3989::6
+    volumes:
+      - ./file-service:/app
+
+networks:
+#Internal network for nginx proxying and ssh
+  backend:
+    driver: bridge
+    #enable_ipv6: true
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+        #- subnet: 2001:3984:3989::/64
+#External network
+  default:
+    driver: bridge
