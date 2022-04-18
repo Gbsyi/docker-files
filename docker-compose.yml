@@ -46,11 +46,14 @@ services:
         ipv4_address: 172.16.238.4
         #ipv6_address: 2001:3984:3989::4
       default:
+    depends_on:
+      - postgres
     environment:
       KEYCLOAK_USER: gbsyi
       KEYCLOAK_PASSWORD: LMhOP230
-      DB_ADDR: http://postgres:5432
-      DB_DATABASE: KeycloakDb
+      DB_ADDR: postgres
+      DB_PORT: 5432
+      DB_DATABASE: keycloakdb
       DB_USER: keycloak
       DB_PASSWORD: LMhOP230
       DB_VENDOR: postgres
@@ -69,6 +72,8 @@ services:
         ipv4_address: 172.16.238.5
         #ipv6_address: 2001:3984:3989::5
       default:
+    depends_on:
+      - postgres
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
@@ -83,6 +88,8 @@ services:
     entrypoint: /bin/bash -c "cd /app ; dotnet ServiceAnywhere.FileService.dll"
     ports:
       - "5001:80"
+    depends_on:
+      - postgres
     networks:
       backend:
         ipv4_address: 172.16.238.6
