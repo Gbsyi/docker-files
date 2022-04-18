@@ -45,12 +45,16 @@ services:
       backend:
         ipv4_address: 172.16.238.4
         #ipv6_address: 2001:3984:3989::4
+      default:
     environment:
-      DB_ADDR: "https://postgres:5432"
-      DB_DATABASE: "KeycloakDb"
-      DB_USER: "keycloak"
-      DB_PASSWORD: "LMhOP230"
-  
+      KEYCLOAK_USER: gbsyi
+      KEYCLOAK_PASSWORD: LMhOP230
+      DB_ADDR: http://postgres:5432
+      DB_DATABASE: KeycloakDb
+      DB_USER: keycloak
+      DB_PASSWORD: LMhOP230
+      DB_VENDOR: postgres
+   
   service-anywhere:
     build: 
       context: ./
@@ -64,6 +68,7 @@ services:
       backend:
         ipv4_address: 172.16.238.5
         #ipv6_address: 2001:3984:3989::5
+      default:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
@@ -82,6 +87,7 @@ services:
       backend:
         ipv4_address: 172.16.238.6
         #ipv6_address: 2001:3984:3989::6
+      default:
     volumes:
       - ./file-service:/app
 
