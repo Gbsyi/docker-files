@@ -15,7 +15,14 @@ services:
         ipv4_address: 172.16.238.2
         #ipv6_address: 2001:3984:3989::2
       default:
-
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
   postgres:
     #image: postgres
     build: 
@@ -57,7 +64,7 @@ services:
       DB_USER: keycloak
       DB_PASSWORD: LMhOP230
       DB_VENDOR: postgres
-   
+      PROXY_ADDRESS_FORWARDING: "true"
   service-anywhere:
     build: 
       context: ./
