@@ -64,13 +64,13 @@ services:
     depends_on:
       - postgres
     environment:
-      KEYCLOAK_USER: gbsyi
-      KEYCLOAK_PASSWORD: LMhOP230
+      KEYCLOAK_USER: login
+      KEYCLOAK_PASSWORD: password
       DB_ADDR: postgres
       DB_PORT: 5432
       DB_DATABASE: keycloakdb
       DB_USER: keycloak
-      DB_PASSWORD: LMhOP230
+      DB_PASSWORD: password
       DB_VENDOR: postgres
       PROXY_ADDRESS_FORWARDING: "true"
 
